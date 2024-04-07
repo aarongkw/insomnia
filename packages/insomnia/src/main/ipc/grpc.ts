@@ -220,7 +220,7 @@ const getMethodsFromReflection = async (
       const descriptorMessage = fileContainingSymbol.toDescriptor('proto3');
       const packageDefinition = protoLoader.loadFileDescriptorSetFromObject(
         descriptorMessage,
-        {}
+          grpcOptions
       );
       const tryToGetMethods = () => {
         try {

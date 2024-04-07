@@ -1,4 +1,5 @@
 import { database as db } from '../common/database';
+import { GrpcMethodInfo } from '../main/ipc/grpc';
 import type { BaseModel } from './index';
 
 export const name = 'gRPC Request';
@@ -28,6 +29,7 @@ interface BaseGrpcRequest {
   metadata: GrpcRequestHeader[];
   metaSortKey: number;
   isPrivate: boolean;
+  methods: GrpcMethodInfo[];
   reflectionApi: {
     enabled: boolean;
     url: string;
@@ -59,6 +61,7 @@ export function init(): BaseGrpcRequest {
     },
     metaSortKey: -1 * Date.now(),
     isPrivate: false,
+    methods: [],
     reflectionApi: {
       enabled: false,
       url: 'https://buf.build',

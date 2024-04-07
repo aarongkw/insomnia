@@ -120,7 +120,6 @@ const INITIAL_GRPC_REQUEST_STATE = {
   responseMessages: [],
   status: undefined,
   error: undefined,
-  methods: [],
 };
 export const loader: LoaderFunction = async ({ params }) => {
   if (!params.requestId) {
@@ -188,6 +187,7 @@ export const Debug: FC = () => {
   const [grpcStates, setGrpcStates] = useState<GrpcRequestState[]>(
     grpcRequests.map(r => ({
       requestId: r._id,
+      methods: r.methods || [],
       ...INITIAL_GRPC_REQUEST_STATE,
     })),
   );
@@ -208,7 +208,7 @@ export const Debug: FC = () => {
         if (isGrpcRequest(doc) && event === 'insert') {
           setGrpcStates(grpcStates => [
             ...grpcStates,
-            { requestId: doc._id, ...INITIAL_GRPC_REQUEST_STATE },
+            { requestId: doc._id, methods: [], ...INITIAL_GRPC_REQUEST_STATE },
           ]);
         }
       }
@@ -234,13 +234,7 @@ export const Debug: FC = () => {
     setGrpcStates(state =>
       state.map(s => (s.requestId === requestId ? newState : s)),
     );
-  const reloadRequests = (requestIds: string[]) => {
-    setGrpcStates(state =>
-      state.map(s =>
-        requestIds.includes(s.requestId) ? { ...s, methods: [] } : s,
-      ),
-    );
-  };
+
   useEffect(
     () =>
       window.main.on('grpc.start', (_, id) => {
@@ -1168,7 +1162,6 @@ export const Debug: FC = () => {
               <GrpcRequestPane
                 grpcState={grpcState}
                 setGrpcState={setGrpcState}
-                reloadRequests={reloadRequests}
               />
             )}
             {isWebSocketRequestId(requestId) && (
