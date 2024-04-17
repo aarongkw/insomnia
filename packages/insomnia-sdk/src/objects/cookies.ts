@@ -1,7 +1,7 @@
+import { Cookie as InsomniaCookie, CookieJar as InsomniaCookieJar } from 'insomnia/src/models/cookie-jar';
 import { Cookie as ToughCookie } from 'tough-cookie';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Cookie as InsomniaCookie, CookieJar as InsomniaCookieJar } from '../../../src/models/cookie-jar';
 import { Property, PropertyList } from './properties';
 
 export interface CookieOptions {
@@ -47,6 +47,8 @@ export class Cookie extends Property {
         this.id = cookieDef.id || '';
         this.cookie = cookie;
     }
+
+    static _index = 'key';
 
     static isCookie(obj: Property) {
         return '_kind' in obj && obj._kind === 'Cookie';
@@ -134,7 +136,7 @@ export class Cookie extends Property {
         return this.cookie.toJSON().value;
     };
 
-    key = () => {
+    get key() {
         return this.cookie.toJSON().key;
     };
 
@@ -207,6 +209,7 @@ export class CookieObject extends CookieList {
         super(cookies);
         const scriptCookieJar = cookieJar ? new CookieJar(cookieJar.name, cookies) : new CookieJar('', []);
         this.cookieJar = scriptCookieJar;
+        this.typeClass = Cookie;
     }
 
     jar() {
